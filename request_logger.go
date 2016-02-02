@@ -11,6 +11,8 @@ import (
 	"github.com/labstack/gommon/color"
 )
 
+// RequestLogger is an `echo` middleware that wraps a request
+// and nicely formats it using the `reverb.Logger`.
 func RequestLogger() echo.MiddlewareFunc {
 	return func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c *echo.Context) error {

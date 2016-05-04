@@ -1,0 +1,48 @@
+hash: e8245b2eee03aacd3af2204eead34bd1ebb3c3d00e233d59b1422fe0ce6b97bb
+updated: 2016-05-04T18:48:49.256146321-04:00
+imports:
+- name: github.com/flosch/go-humanize
+  version: 3ba51eabe50663842d569003bab93fc256883173
+- name: github.com/flosch/pongo2
+  version: 7f5515449ea9bbeb00256d9cbb654c556e7d0146
+- name: github.com/gorilla/context
+  version: a8d44e7d8e4d532b6a27a02dd82abb31cc1b01bd
+- name: github.com/gorilla/securecookie
+  version: 667fe4e3466a040b780561fe9b51a83a3753eefc
+- name: github.com/gorilla/sessions
+  version: a1216e0aed834aa9074063dd4085f5c3df8d1fab
+- name: github.com/labstack/echo
+  version: f12d77f9cf7a374fa39e2e029a439c55e59dbc91
+- name: github.com/labstack/gommon
+  version: 2e62be24dbb1ceb226554aaccfe5a89ec71043b3
+  subpackages:
+  - color
+  - log
+- name: github.com/markbates/fresh
+  version: 715e11a104bbcd8f4875ab672959a9b60262b748
+  subpackages:
+  - runner/runnerutils
+- name: github.com/markbates/going
+  version: a1da2ae5969b4c18a368f1bfef5e154be169c47c
+  subpackages:
+  - defaults
+  - imt
+  - randx
+  - validate
+  - wait
+- name: github.com/mattn/go-colorable
+  version: 45ce6a6f60010487dd0dbab368b5fbbed1c14ef0
+- name: github.com/mattn/go-isatty
+  version: 56b76bdf51f7708750eac80fa38b952bb9f32639
+- name: github.com/valyala/fasttemplate
+  version: 3b874956e03f1636d171bda64b130f9135f42cff
+- name: golang.org/x/net
+  version: 35ec611a141ee705590b9eb64d673f9e6dfeb1ac
+  subpackages:
+  - context
+  - websocket
+- name: golang.org/x/sys
+  version: b776ec39b3e54652e09028aaaaac9757f4f8211a
+  subpackages:
+  - unix
+devImports: []

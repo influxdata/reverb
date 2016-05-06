@@ -22,11 +22,11 @@ var AuthorizeRedirectURL = "/"
 // if the request is HTTP. If the request is of type `application/json`
 // the a new `http.StatusForbidden` will be thrown.
 func Authorize(handler echo.HandlerFunc) echo.HandlerFunc {
-	return func(ctx *echo.Context) error {
+	return func(ctx echo.Context) error {
 		if ctx.Get(AuthorizeKey) != nil {
 			return handler(ctx)
 		}
-		ct := ctx.Request().Header.Get("Content-Type")
+		ct := ctx.Request().Header().Get("Content-Type")
 		if ct == imt.Application.JSON {
 			return echo.NewHTTPError(http.StatusForbidden, "Unauthorized Access")
 		}

@@ -12,8 +12,9 @@ import (
 // the rendering of "github.com/flosch/pongo2" templates.
 type Page struct {
 	pongo2.Context
-	Echo      *echo.Context
+	Echo      echo.Context
 	Extension string
+	layout    string
 }
 
 // Layout returns the path to the current layout file.
@@ -51,8 +52,8 @@ func (p Page) SetValidationErrors(verrs *validate.Errors) {
 // NewPage returns a new value of Page with defaults set. These
 // defaults include the `layout` being set to "application" as well
 // as the current request being set onto the `Context`.
-func NewPage(ctx *echo.Context) *Page {
-	p := &Page{
+func NewPage(ctx echo.Context) Page {
+	p := Page{
 		Echo: ctx,
 		Context: pongo2.Context{
 			"request": ctx.Request(),

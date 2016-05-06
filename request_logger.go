@@ -10,6 +10,8 @@ import (
 
 	"github.com/flosch/go-humanize"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/engine"
+	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/gommon/color"
 )
 
@@ -18,50 +20,49 @@ var AssetsPath = regexp.MustCompile("^/assets/.+")
 // RequestLogger is an `echo` middleware that wraps a request
 // and nicely formats it using the `reverb.Logger`.
 func RequestLogger() echo.MiddlewareFunc {
-	return func(h echo.HandlerFunc) echo.HandlerFunc {
-		return func(c *echo.Context) error {
-			req := c.Request()
-			res := c.Response()
-			path := path(req)
+	return func(c echo.Context) error {
+		req := c.Request().(*standard.Request).Request
+		res := c.Response()
+		res := c.Response()
 
-			lg := NewLogger(c)
-			c.Set("lg", lg)
+		lg := NewLogger(c)
+		c.Set("lg", lg)
 
-			// don't log assets
-			if AssetsPath.MatchString(path) {
-				lg.SetOutput(&bytes.Buffer{})
-			}
-
-			start := time.Now()
-
-			lg.Printf("Started %s \"%s\" for %s %s", req.Method, path, remoteAddr(req), start)
-
-			err := h(c)
-			if err != nil {
-				lg.Printf("  Error: %s", err)
-				c.Error(err)
-			}
-
-			stop := time.Now()
-			size := res.Size()
-
-			lg.AddExtras(fmt.Sprintf("Size: %s", humanize.Bytes(uint64(size))))
-			ds := lg.Durations.String()
-			if ds != "" {
-				lg.AddExtras(ds)
-			}
-
-			lg.Printf("Completed %s in %s%s", code(res), stop.Sub(start), lg.Extras)
-			return nil
+		// don't log assets
+		if AssetsPath.MatchString(path) {
+			lg.SetOutput(&bytes.Buffer{})
 		}
+
+		start := time.Now()
+
+		lg.Printf("Started %s \"%s\" for %s %s", req.Method, path, remoteAddr(req), start)
+
+		err := h(c)
+		if err != nil {
+			lg.Printf("  Error: %s", err)
+			c.Error(err)
+		}
+
+		stop := time.Now()
+		size := res.Size()
+
+		lg.AddExtras(fmt.Sprintf("Size: %s", humanize.Bytes(uint64(size))))
+		ds := lg.Durations.String()
+		if ds != "" {
+			lg.AddExtras(ds)
+		}
+
+		lg.Printf("Completed %s in %s%s", code(res), stop.Sub(start), lg.Extras)
+		return nil
 	}
+
 }
 
 func remoteAddr(req *http.Request) string {
 	var remoteAddr string
-	if ip := req.Header.Get(echo.XRealIP); ip != "" {
+	if ip := req.Header.Get(echo.HeaderXRealIP); ip != "" {
 		remoteAddr = ip
-	} else if ip = req.Header.Get(echo.XForwardedFor); ip != "" {
+	} else if ip = req.Header.Get(echo.HeaderXForwardedFor); ip != "" {
 		remoteAddr = ip
 	} else {
 		remoteAddr = req.RemoteAddr
@@ -79,7 +80,7 @@ func path(req *http.Request) string {
 	return path
 }
 
-func code(res *echo.Response) string {
+func code(res engine.Response) string {
 	n := res.Status()
 	code := color.Green(n)
 	switch {

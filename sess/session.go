@@ -10,6 +10,7 @@ import (
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/engine/standard"
 )
 
 // Store is the `github.com/gorilla/sessions` store used to back
@@ -59,6 +60,6 @@ func Get(r *http.Request, w http.ResponseWriter) *Session {
 }
 
 // Get a session using an `echo.Context`.
-func GetFromCtx(ctx *echo.Context) *Session {
-	return Get(ctx.Request(), ctx.Response())
+func GetFromCtx(ctx echo.Context) *Session {
+	return Get(ctx.Request().(*standard.Request).Request, ctx.Response().(*standard.Response).ResponseWriter)
 }

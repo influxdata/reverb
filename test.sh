@@ -1,3 +1,3 @@
 #!/bin/bash
-
-go test $(glide novendor)
+clear
+go test -v $(glide novendor)

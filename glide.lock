@@ -1,5 +1,5 @@
-hash: e8245b2eee03aacd3af2204eead34bd1ebb3c3d00e233d59b1422fe0ce6b97bb
-updated: 2016-05-04T18:48:49.256146321-04:00
+hash: c313a82b53e0aff668eec14f4b3f71e48ed05ed303903aef82596782b6ccf4ee
+updated: 2016-05-06T11:47:16.152394644-04:00
 imports:
 - name: github.com/flosch/go-humanize
   version: 3ba51eabe50663842d569003bab93fc256883173
@@ -12,7 +12,9 @@ imports:
 - name: github.com/gorilla/sessions
   version: a1216e0aed834aa9074063dd4085f5c3df8d1fab
 - name: github.com/labstack/echo
-  version: f12d77f9cf7a374fa39e2e029a439c55e59dbc91
+  version: 37f05202e8d94977ef9563050630cfb473d07e76
+  subpackages:
+  - engine
 - name: github.com/labstack/gommon
   version: 2e62be24dbb1ceb226554aaccfe5a89ec71043b3
   subpackages:
@@ -37,10 +39,9 @@ imports:
 - name: github.com/valyala/fasttemplate
   version: 3b874956e03f1636d171bda64b130f9135f42cff
 - name: golang.org/x/net
-  version: 35ec611a141ee705590b9eb64d673f9e6dfeb1ac
+  version: 7e42c0e1329bb108f7376a7618a2871ab90f1c4d
   subpackages:
   - context
-  - websocket
 - name: golang.org/x/sys
   version: b776ec39b3e54652e09028aaaaac9757f4f8211a
   subpackages:

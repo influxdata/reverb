@@ -102,7 +102,7 @@ func (l *Logger) FmtError(err error, limit int) error {
 
 // NewLogger returns a `Logger` value and sets up default values such as log
 // format, an "ID" for the request, etc...
-func NewLogger(ctx *echo.Context) *Logger {
+func NewLogger(ctx echo.Context) *Logger {
 	id := getID(ctx)
 	l := &Logger{
 		Logger:    log.New(os.Stdout, fmt.Sprintf("[%s] ", id), log.LstdFlags),
@@ -112,16 +112,17 @@ func NewLogger(ctx *echo.Context) *Logger {
 	return l
 }
 
-func getID(ctx *echo.Context) string {
+func getID(ctx echo.Context) string {
 	c, err := ctx.Request().Cookie("_session_id")
 	if err != nil {
-		c = &http.Cookie{
+		ck := &http.Cookie{
 			Name:    "_session_id",
 			Value:   randx.String(10),
 			Expires: time.Now().Add(10 * 365 * 24 * time.Hour), // 10 years
 		}
 		res := ctx.Response()
-		res.Header().Add("Set-Cookie", c.String())
+		res.Header().Add("Set-Cookie", ck.String())
+		return ck.Value
 	}
-	return c.Value
+	return c.Value()
 }

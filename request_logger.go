@@ -1,6 +1,7 @@
 package reverb
 
 import (
+	"bytes"
 	"fmt"
 	"net"
 	"net/http"
@@ -23,13 +24,13 @@ func RequestLogger() echo.MiddlewareFunc {
 			res := c.Response()
 			path := path(req)
 
-			// don't log assets
-			if AssetsPath.MatchString(path) {
-				return h(c)
-			}
-
 			lg := NewLogger(c)
 			c.Set("lg", lg)
+
+			// don't log assets
+			if AssetsPath.MatchString(path) {
+				lg.SetOutput(&bytes.Buffer{})
+			}
 
 			start := time.Now()
 

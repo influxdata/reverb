@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/flosch/go-humanize"
@@ -11,20 +12,28 @@ import (
 	"github.com/labstack/gommon/color"
 )
 
+var AssetsPath = regexp.MustCompile("^/assets/.+")
+
 // RequestLogger is an `echo` middleware that wraps a request
 // and nicely formats it using the `reverb.Logger`.
 func RequestLogger() echo.MiddlewareFunc {
 	return func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c *echo.Context) error {
+			req := c.Request()
+			res := c.Response()
+			path := path(req)
+
+			// don't log assets
+			if AssetsPath.MatchString(path) {
+				return h(c)
+			}
+
 			lg := NewLogger(c)
 			c.Set("lg", lg)
 
 			start := time.Now()
 
-			req := c.Request()
-			res := c.Response()
-
-			lg.Printf("Started %s \"%s\" for %s %s", req.Method, path(req), remoteAddr(req), start)
+			lg.Printf("Started %s \"%s\" for %s %s", req.Method, path, remoteAddr(req), start)
 
 			err := h(c)
 			if err != nil {

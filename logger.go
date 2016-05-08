@@ -56,6 +56,7 @@ type Logger struct {
 	*log.Logger
 	Durations durations
 	Extras    extras
+	LastError error
 }
 
 // AddDurations let's you add `n` `time.Duration` values to a particular
@@ -77,7 +78,10 @@ func (l *Logger) AddExtras(ex ...string) {
 
 func (l *Logger) Error(err error) {
 	if err != nil {
-		l.Println(l.FmtError(err, 2))
+		// l.LastError = err
+		err = l.FmtError(err, 2)
+		l.LastError = err
+		l.Println(err)
 	}
 }
 

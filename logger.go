@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime"
 	"sort"
 	"strings"
 	"time"
@@ -72,6 +73,16 @@ func (l *Logger) AddDurations(name string, ts ...time.Duration) {
 // final request log message.
 func (l *Logger) AddExtras(ex ...string) {
 	l.Extras = append(l.Extras, ex...)
+}
+
+func (l *Logger) Error(err error) {
+	if err != nil {
+		// notice that we're using 1, so it will actually log the where
+		// the error happened, 0 = this function, we don't want that.
+		pc, fn, line, _ := runtime.Caller(1)
+
+		l.Printf("%s: %s[%s:%d] %v", err.Error(), runtime.FuncForPC(pc).Name(), fn, line, err)
+	}
 }
 
 // NewLogger returns a `Logger` value and sets up default values such as log

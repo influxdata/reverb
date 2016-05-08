@@ -89,9 +89,9 @@ func (l *Logger) FmtError(err error, skip int) error {
 	if err != nil {
 		// notice that we're using 1, so it will actually log the where
 		// the error happened, 0 = this function, we don't want that.
-		pc, fn, line, _ := runtime.Caller(skip)
+		_, fn, line, _ := runtime.Caller(skip)
 
-		err = fmt.Errorf("%s: %s[%s:%d] %v", err.Error(), runtime.FuncForPC(pc).Name(), fn, line, err)
+		err = fmt.Errorf("%s:%d:: %v", fn, line, err)
 	}
 	return err
 }

@@ -77,15 +77,15 @@ func (l *Logger) AddExtras(ex ...string) {
 
 func (l *Logger) Error(err error) {
 	if err != nil {
-		l.Println(l.FmtError(err))
+		l.Println(l.FmtError(err, 2))
 	}
 }
 
-func (l *Logger) FmtError(err error) error {
+func (l *Logger) FmtError(err error, skip int) error {
 	if err != nil {
 		// notice that we're using 1, so it will actually log the where
 		// the error happened, 0 = this function, we don't want that.
-		pc, fn, line, _ := runtime.Caller(1)
+		pc, fn, line, _ := runtime.Caller(skip)
 
 		err = fmt.Errorf("%s: %s[%s:%d] %v", err.Error(), runtime.FuncForPC(pc).Name(), fn, line, err)
 	}

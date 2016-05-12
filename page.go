@@ -13,20 +13,19 @@ import (
 type Page struct {
 	pongo2.Context
 	Echo      *echo.Context
-	layout    string
 	Extension string
 }
 
 // Layout returns the path to the current layout file.
 // Example: "layouts/%s.html"
 func (p Page) Layout() string {
-	return p.layout
+	return p.Context["_layout"].(string)
 }
 
-func (p Page) SetLayout(s string) {
-	p.layout = s
+func (p *Page) SetLayout(s string) {
+	p.Context["_layout"] = s
 	if s != "" {
-		p.layout = fmt.Sprintf("layouts/%s%s", p.layout, p.Extension)
+		p.Context["_layout"] = fmt.Sprintf("layouts/%s%s", s, p.Extension)
 	}
 }
 

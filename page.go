@@ -20,7 +20,14 @@ type Page struct {
 // Layout returns the path to the current layout file.
 // Example: "layouts/%s.html"
 func (p Page) Layout() string {
-	return fmt.Sprintf("layouts/%s%s", p.layout, p.Extension)
+	return p.layout
+}
+
+func (p Page) SetLayout(s string) {
+	p.layout = s
+	if s != "" {
+		p.layout = fmt.Sprintf("layouts/%s%s", p.layout, p.Extension)
+	}
 }
 
 // SetTemplate set a value that defines the "yield"/"content"
@@ -52,7 +59,7 @@ func NewPage(ctx *echo.Context) Page {
 			"request": ctx.Request(),
 		},
 		Extension: ".html",
-		layout:    "application",
 	}
+	p.SetLayout("application")
 	return p
 }

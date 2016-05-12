@@ -12,20 +12,21 @@ import (
 // the rendering of "github.com/flosch/pongo2" templates.
 type Page struct {
 	pongo2.Context
-	Echo   *echo.Context
-	layout string
+	Echo      *echo.Context
+	layout    string
+	Extension string
 }
 
 // Layout returns the path to the current layout file.
 // Example: "layouts/%s.html"
 func (p Page) Layout() string {
-	return fmt.Sprintf("layouts/%s.html", p.layout)
+	return fmt.Sprintf("layouts/%s%s", p.layout, p.Extension)
 }
 
 // SetTemplate set a value that defines the "yield"/"content"
 // template.
 func (p Page) SetTemplate(name string) {
-	p.Context["_yield_template"] = name + ".html"
+	p.Context["_yield_template"] = name + p.Extension
 }
 
 // Set adds the specificied value to the context. If a value
@@ -50,7 +51,8 @@ func NewPage(ctx *echo.Context) Page {
 		Context: pongo2.Context{
 			"request": ctx.Request(),
 		},
-		layout: "application",
+		Extension: ".html",
+		layout:    "application",
 	}
 	return p
 }

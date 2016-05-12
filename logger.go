@@ -1,6 +1,7 @@
 package reverb
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -79,19 +80,22 @@ func (l *Logger) AddExtras(ex ...string) {
 func (l *Logger) Error(err error) {
 	if err != nil {
 		// l.LastError = err
-		err = l.FmtError(err, 2)
+		err = l.FmtError(err, 10)
 		l.LastError = err
 		l.Println(err)
 	}
 }
 
-func (l *Logger) FmtError(err error, skip int) error {
+func (l *Logger) FmtError(err error, limit int) error {
 	if err != nil {
+		stack := []string{err.Error()}
 		// notice that we're using 1, so it will actually log the where
 		// the error happened, 0 = this function, we don't want that.
-		_, fn, line, _ := runtime.Caller(skip)
-
-		err = fmt.Errorf("%s:%d:: %v", fn, line, err)
+		for i := 0; i < limit; i++ {
+			_, fn, line, _ := runtime.Caller(i)
+			stack = append(stack, fmt.Sprintf("%s:%d", fn, line))
+		}
+		return errors.New(strings.Join(stack, "\n"))
 	}
 	return err
 }

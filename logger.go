@@ -3,16 +3,14 @@ package reverb
 import (
 	"errors"
 	"fmt"
-	"log"
-	"net/http"
-	"os"
 	"runtime"
 	"sort"
 	"strings"
 	"time"
 
+	"github.com/labstack/gommon/log"
+
 	"github.com/labstack/echo"
-	"github.com/markbates/going/randx"
 )
 
 type extras []string
@@ -82,7 +80,7 @@ func (l *Logger) Error(err error) {
 		// l.LastError = err
 		err = l.FmtError(err, 10)
 		l.LastError = err
-		l.Println(err)
+		l.Logger.Error(err)
 	}
 }
 
@@ -103,26 +101,26 @@ func (l *Logger) FmtError(err error, limit int) error {
 // NewLogger returns a `Logger` value and sets up default values such as log
 // format, an "ID" for the request, etc...
 func NewLogger(ctx echo.Context) *Logger {
-	id := getID(ctx)
+	// id := getID(ctx)
 	l := &Logger{
-		Logger:    log.New(os.Stdout, fmt.Sprintf("[%s] ", id), log.LstdFlags),
+		Logger:    ctx.Logger(),
 		Durations: durations{},
 		Extras:    extras{},
 	}
 	return l
 }
 
-func getID(ctx echo.Context) string {
-	c, err := ctx.Request().Cookie("_session_id")
-	if err != nil {
-		ck := &http.Cookie{
-			Name:    "_session_id",
-			Value:   randx.String(10),
-			Expires: time.Now().Add(10 * 365 * 24 * time.Hour), // 10 years
-		}
-		res := ctx.Response()
-		res.Header().Add("Set-Cookie", ck.String())
-		return ck.Value
-	}
-	return c.Value()
-}
+// func getID(ctx echo.Context) string {
+// 	c, err := ctx.Request().Cookie("_session_id")
+// 	if err != nil {
+// 		ck := &http.Cookie{
+// 			Name:    "_session_id",
+// 			Value:   randx.String(10),
+// 			Expires: time.Now().Add(10 * 365 * 24 * time.Hour), // 10 years
+// 		}
+// 		res := ctx.Response()
+// 		res.Header().Add("Set-Cookie", ck.String())
+// 		return ck.Value
+// 	}
+// 	return c.Value()
+// }

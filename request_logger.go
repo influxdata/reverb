@@ -21,15 +21,12 @@ var AssetsPath = regexp.MustCompile("^/assets/.+")
 // and nicely formats it using the `reverb.Logger`.
 func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
+
 		req := c.Request().(*standard.Request).Request
 		res := c.Response()
 		path := path(c)
 
-		var lg *Logger
-		if c.Get("lg") == nil {
-			lg = NewLogger(c)
-			c.Set("lg", lg)
-		}
+		lg := NewLogger(c)
 
 		// don't log assets
 		if AssetsPath.MatchString(path) {

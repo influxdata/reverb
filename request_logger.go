@@ -25,8 +25,11 @@ func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
 		res := c.Response()
 		path := path(c)
 
-		lg := NewLogger(c)
-		c.Set("lg", lg)
+		var lg *Logger
+		if c.Get("lg") == nil {
+			lg = NewLogger(c)
+			c.Set("lg", lg)
+		}
 
 		// don't log assets
 		if AssetsPath.MatchString(path) {

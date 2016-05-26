@@ -27,6 +27,7 @@ func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
 		path := path(c)
 
 		lg := NewLogger(c)
+		c.Set("lg", lg)
 
 		// don't log assets
 		if AssetsPath.MatchString(path) {
@@ -37,7 +38,7 @@ func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
 
 		lg.Printf("Started %s \"%s\" for %s %s", req.Method, path, remoteAddr(req), start)
 
-		next(c)
+		err := next(c)
 
 		stop := time.Now()
 		size := res.Size()
@@ -49,7 +50,7 @@ func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		lg.Printf("Completed %s in %s%s", code(res), stop.Sub(start), lg.Extras)
-		return nil
+		return err
 	}
 
 }

@@ -19,11 +19,11 @@ var AssetsPath = regexp.MustCompile("^/assets/.+")
 
 // RequestLogger is an `echo` middleware that wraps a request
 // and nicely formats it using the `reverb.Logger`.
-func RequestLogger() echo.MiddlewareFunc {
+func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		req := c.Request().(*standard.Request).Request
 		res := c.Response()
-		res := c.Response()
+		path := path(req)
 
 		lg := NewLogger(c)
 		c.Set("lg", lg)
@@ -37,7 +37,7 @@ func RequestLogger() echo.MiddlewareFunc {
 
 		lg.Printf("Started %s \"%s\" for %s %s", req.Method, path, remoteAddr(req), start)
 
-		err := h(c)
+		err := next(c)
 		if err != nil {
 			lg.Printf("  Error: %s", err)
 			c.Error(err)

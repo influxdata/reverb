@@ -37,11 +37,7 @@ func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
 
 		lg.Printf("Started %s \"%s\" for %s %s", req.Method, path, remoteAddr(req), start)
 
-		err := next(c)
-		if err != nil {
-			lg.Printf("  Error: %s", err)
-			c.Error(err)
-		}
+		next(c)
 
 		stop := time.Now()
 		size := res.Size()

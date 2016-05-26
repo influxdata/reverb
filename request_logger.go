@@ -23,7 +23,7 @@ func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		req := c.Request().(*standard.Request).Request
 		res := c.Response()
-		path := path(req)
+		path := path(c)
 
 		lg := NewLogger(c)
 		c.Set("lg", lg)
@@ -71,8 +71,8 @@ func remoteAddr(req *http.Request) string {
 	return remoteAddr
 }
 
-func path(req *http.Request) string {
-	path := req.URL.Path
+func path(ctx echo.Context) string {
+	path := ctx.Request().URL().Path()
 
 	if path == "" {
 		path = "/"

@@ -45,6 +45,10 @@ func (c *Context) HandleError(err error) error {
 	return err
 }
 
+func (c *Context) ContentType() string {
+	return c.Request().Header().Get("Content-Type")
+}
+
 func (c *Context) Layout() string {
 	return c.Data["_layout"].(string)
 }

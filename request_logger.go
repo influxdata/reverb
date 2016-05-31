@@ -11,6 +11,7 @@ import (
 	"github.com/flosch/go-humanize"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine"
+	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/gommon/color"
 )
 
@@ -19,10 +20,8 @@ var AssetsPath = regexp.MustCompile("^/assets/.+")
 // RequestLogger is an `echo` middleware that wraps a request
 // and nicely formats it using the `reverb.Logger`.
 func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(e echo.Context) error {
-		c := e.(*Context)
-
-		req := c.RawRequest()
+	return func(c echo.Context) error {
+		req := c.Request().(*standard.Request).Request
 		res := c.Response()
 		path := path(c)
 

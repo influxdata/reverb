@@ -11,7 +11,6 @@ import (
 	"github.com/flosch/go-humanize"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine"
-	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/gommon/color"
 )
 
@@ -20,9 +19,10 @@ var AssetsPath = regexp.MustCompile("^/assets/.+")
 // RequestLogger is an `echo` middleware that wraps a request
 // and nicely formats it using the `reverb.Logger`.
 func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
+	return func(e echo.Context) error {
+		c := e.(*Context)
 
-		req := c.Request().(*standard.Request).Request
+		req := c.RawRequest()
 		res := c.Response()
 		path := path(c)
 
@@ -44,6 +44,7 @@ func RequestLogger(next echo.HandlerFunc) echo.HandlerFunc {
 		size := res.Size()
 
 		lg.AddExtras(fmt.Sprintf("Size: %s", humanize.Bytes(uint64(size))))
+
 		ds := lg.Durations.String()
 		if ds != "" {
 			lg.AddExtras(ds)

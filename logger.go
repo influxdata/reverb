@@ -1,9 +1,7 @@
 package reverb
 
 import (
-	"errors"
 	"fmt"
-	"runtime"
 	"sort"
 	"strings"
 	"time"
@@ -55,7 +53,6 @@ type Logger struct {
 	*log.Logger
 	Durations durations
 	Extras    extras
-	LastError error
 }
 
 // AddDurations let's you add `n` `time.Duration` values to a particular
@@ -73,29 +70,6 @@ func (l *Logger) AddDurations(name string, ts ...time.Duration) {
 // final request log message.
 func (l *Logger) AddExtras(ex ...string) {
 	l.Extras = append(l.Extras, ex...)
-}
-
-func (l *Logger) Error(err error) {
-	if err != nil {
-		// l.LastError = err
-		err = l.FmtError(err, 10)
-		l.LastError = err
-		l.Logger.Error(err)
-	}
-}
-
-func (l *Logger) FmtError(err error, limit int) error {
-	if err != nil {
-		stack := []string{err.Error()}
-		// notice that we're using 1, so it will actually log the where
-		// the error happened, 0 = this function, we don't want that.
-		for i := 0; i < limit; i++ {
-			_, fn, line, _ := runtime.Caller(i)
-			stack = append(stack, fmt.Sprintf("%s:%d", fn, line))
-		}
-		return errors.New(strings.Join(stack, "\n"))
-	}
-	return err
 }
 
 // NewLogger returns a `Logger` value and sets up default values such as log

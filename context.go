@@ -3,6 +3,8 @@ package reverb
 import (
 	"fmt"
 	"net/http"
+	"sync"
+	"time"
 
 	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/gommon/log"
@@ -14,10 +16,12 @@ import (
 
 type Context struct {
 	echo.Context
-	Data    map[string]interface{}
-	lg      *log.Logger
-	Session *sess.Session
-	err     error
+	Data              map[string]interface{}
+	lg                *log.Logger
+	Session           *sess.Session
+	RenderedTemplates []string
+	err               error
+	lock              *sync.Mutex
 }
 
 func (c *Context) RawRequest() *http.Request {
@@ -88,12 +92,29 @@ func (c *Context) SetValidationErrors(verrs *validate.Errors) {
 	c.Set("validation_errors", verrs)
 }
 
+func (c *Context) LogRenderedTemplate(template string, fn func() error) error {
+	now := time.Now()
+	defer func() {
+		stop := time.Now()
+		end := stop.Sub(now)
+		c.lock.Lock()
+		c.RenderedTemplates = append(c.RenderedTemplates, template)
+		c.lock.Unlock()
+		lg := c.Get("lg").(*Logger)
+		lg.AddDurations("Views", end)
+		lg.Printf("  Rendered %s %s", template, end)
+	}()
+	return fn()
+}
+
 func NewContext(e echo.Context) *Context {
 	c := &Context{
-		Context: e,
-		Data:    map[string]interface{}{},
-		Session: sess.GetFromCtx(e),
-		lg:      log.New(""),
+		Context:           e,
+		Data:              map[string]interface{}{},
+		Session:           sess.GetFromCtx(e),
+		RenderedTemplates: []string{},
+		lock:              &sync.Mutex{},
+		lg:                log.New(""),
 	}
 
 	c.lg.EnableColor()

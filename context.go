@@ -2,7 +2,9 @@ package reverb
 
 import (
 	"fmt"
+	"net/http"
 
+	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/gommon/log"
 	"github.com/markbates/going/validate"
 	"github.com/markbates/reverb/sess"
@@ -16,6 +18,14 @@ type Context struct {
 	lg      *log.Logger
 	Session *sess.Session
 	err     error
+}
+
+func (c *Context) RawRequest() *http.Request {
+	return c.Request().(*standard.Request).Request
+}
+
+func (c *Context) RawResponse() http.ResponseWriter {
+	return c.Response().(*standard.Response).ResponseWriter
 }
 
 func (c *Context) Get(s string) interface{} {
@@ -70,12 +80,6 @@ func (c *Context) Extension() string {
 		return e.(string)
 	}
 	return ".html"
-}
-
-// SetTemplate set a value that defines the "yield"/"content"
-// template.
-func (c *Context) SetTemplate(name string) {
-	c.Data["_yield_template"] = name + c.Extension()
 }
 
 // SetValidationErrors will add `validate.Errors` to the context

@@ -15,6 +15,7 @@ type Context struct {
 	Data    map[string]interface{}
 	lg      *log.Logger
 	Session *sess.Session
+	err     error
 }
 
 func (c *Context) Get(s string) interface{} {
@@ -29,8 +30,19 @@ func (c *Context) Logger() *log.Logger {
 	return c.lg
 }
 
+func (c *Context) Err() error {
+	return c.err
+}
+
 func (c *Context) Error(err error) {
+	c.err = err
 	c.Logger().Error(err)
+}
+
+func (c *Context) HandleError(err error) error {
+	c.err = err
+	c.Logger().Error(err)
+	return err
 }
 
 func (c *Context) Layout() string {

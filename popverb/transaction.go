@@ -24,9 +24,11 @@ var Transaction = func(db *pop.Connection) echo.MiddlewareFunc {
 				}
 				ctx.Set("tx", tx)
 
+				before := tx.Elapsed
 				err := handler(ctx)
+				after := tx.Elapsed
 				if clg != nil {
-					logPopTimings(lg, tx.Timings)
+					logPopTimings(lg, []time.Duration{time.Duration(after - before)})
 				}
 				return err
 			})

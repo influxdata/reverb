@@ -12,12 +12,13 @@ import (
 	"github.com/markbates/reverb/sess"
 
 	"github.com/labstack/echo"
+	elog "github.com/labstack/echo/log"
 )
 
 type Context struct {
 	echo.Context
 	Data              map[string]interface{}
-	lg                *log.Logger
+	lg                elog.Logger
 	Session           *sess.Session
 	RenderedTemplates []string
 	err               error
@@ -40,7 +41,7 @@ func (c *Context) Set(s string, i interface{}) {
 	c.Data[s] = i
 }
 
-func (c *Context) Logger() *log.Logger {
+func (c *Context) Logger() elog.Logger {
 	return c.lg
 }
 
@@ -108,17 +109,18 @@ func (c *Context) LogRenderedTemplate(template string, fn func() error) error {
 }
 
 func NewContext(e echo.Context) *Context {
+	lg := log.New("")
 	c := &Context{
 		Context:           e,
 		Data:              map[string]interface{}{},
 		Session:           sess.GetFromCtx(e),
 		RenderedTemplates: []string{},
 		lock:              &sync.Mutex{},
-		lg:                log.New(""),
+		lg:                lg,
 	}
 
-	c.lg.EnableColor()
-	c.lg.SetFormat("${level}\t${time_rfc3339} ${long_file}:${line} : ${message}\n")
+	lg.EnableColor()
+	// lg.SetFormat("${level}\t${time_rfc3339} ${long_file}:${line} : ${message}\n")
 
 	c.SetExtension(".html")
 	c.SetLayout("application")

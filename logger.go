@@ -6,9 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/labstack/gommon/log"
-
 	"github.com/labstack/echo"
+	elog "github.com/labstack/echo/log"
 )
 
 type extras []string
@@ -50,7 +49,7 @@ func (d durations) String() string {
 // let's you log durations as well as extra logging data that will
 // all get printed out nicely at the end of a request.
 type Logger struct {
-	*log.Logger
+	elog.Logger
 	Durations durations
 	Extras    extras
 }
@@ -83,18 +82,3 @@ func NewLogger(ctx echo.Context) *Logger {
 	}
 	return l
 }
-
-// func getID(ctx echo.Context) string {
-// 	c, err := ctx.Request().Cookie("_session_id")
-// 	if err != nil {
-// 		ck := &http.Cookie{
-// 			Name:    "_session_id",
-// 			Value:   randx.String(10),
-// 			Expires: time.Now().Add(10 * 365 * 24 * time.Hour), // 10 years
-// 		}
-// 		res := ctx.Response()
-// 		res.Header().Add("Set-Cookie", ck.String())
-// 		return ck.Value
-// 	}
-// 	return c.Value()
-// }

@@ -3,9 +3,9 @@ package popverb
 import (
 	"time"
 
+	"github.com/influxdata/reverb"
 	"github.com/labstack/echo"
 	"github.com/markbates/pop"
-	"github.com/markbates/reverb"
 )
 
 var Transaction = func(db *pop.Connection) echo.MiddlewareFunc {

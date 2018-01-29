@@ -3,9 +3,9 @@ package reverb_test
 import (
 	"testing"
 
+	"github.com/influxdata/reverb"
 	"github.com/labstack/echo"
 	"github.com/markbates/going/willy"
-	"github.com/markbates/reverb"
 	"github.com/stretchr/testify/require"
 )
 

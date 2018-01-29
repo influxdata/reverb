@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/influxdata/reverb"
 	"github.com/markbates/going/willy"
-	"github.com/markbates/reverb"
 	"github.com/stretchr/testify/require"
 )
 

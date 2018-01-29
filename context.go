@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/influxdata/reverb/sess"
 	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/gommon/log"
 	"github.com/markbates/going/validate"
-	"github.com/markbates/reverb/sess"
 
 	"github.com/labstack/echo"
 	elog "github.com/labstack/echo/log"
